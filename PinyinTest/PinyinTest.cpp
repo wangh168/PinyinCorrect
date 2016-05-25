@@ -129,7 +129,7 @@ void test_neighborpoint()
 
 void test_hyperspace()
 {
-    std::string filename = "../pinyin.txt";
+    std::string filename = "./pinyin.txt";
     //    std::string filename = "~/Documents/OneDrive/myCode/Mercur/pinyin.txt";
     HyperSpace *p = new HyperSpace(filename);
     char buf[1024] = { 0 };
