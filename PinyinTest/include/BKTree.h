@@ -48,7 +48,7 @@ public:
         memcpy((char *)_data, (char *)bkNode._data, sizeof(DataT) * _len);
     }
 
-    ~BKNode()
+    ~BKNode() 
     {
         delete []_data;
         _data = NULL;
