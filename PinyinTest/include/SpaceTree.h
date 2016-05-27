@@ -213,14 +213,17 @@ public:
 
     bool getCentroid(Point<DataT> &centroidPoint)
     {
-        if (centroidPoint.getDimension() != _dimension) {
+        if (centroidPoint.getDimension() != _dimension) 
+        {
             assert(false);
             return false;
         }
         int32_t count = _points.size();
-        for (int32_t i = 0; i < _dimension; i++) {
+        for (int32_t i = 0; i < _dimension; i++) 
+        {
             DataT sum = 0;
-            for (int32_t j = 0; j < count; j++) {
+            for (int32_t j = 0; j < count; j++)
+            {
                 sum += _points[j].getCoordinateByAxis(i);
             }
             centroidPoint.setCoordinateByAxis(i, sum / count);
@@ -232,7 +235,8 @@ public:
         assert(a.getDimension() == b.getDimension());
         int32_t dimension = a.getDimension();
         float sum = 0;
-        for (int32_t i = 0; i < dimension; i++) {
+        for (int32_t i = 0; i < dimension; i++)
+        {
             DataT temp = (a.getCoordinateByAxis(i) - b.getCoordinateByAxis(i));
             sum += (float) temp * temp;
         }
@@ -244,9 +248,11 @@ public:
         assert(_points.size() > 0 && point.getDimension() == _dimension);
         float maxDistance = 0;
         int32_t found = -1;
-        for ( int32_t i = 0; i < _points.size(); i++ ) {
+        for ( int32_t i = 0; i < _points.size(); i++ )
+        {
             float distance = calcEuclideanDistance(_points[i], point);
-            if ( maxDistance < distance ) {
+            if ( maxDistance < distance )
+            {
                 maxDistance = distance;
                 found = i;
             }
@@ -256,7 +262,8 @@ public:
 
     bool isLeaf() const
     {
-        if ( _leftChild == NULL && _rightChild == NULL ) {
+        if ( _leftChild == NULL && _rightChild == NULL )
+        {
             return true;
         }
         return false;
@@ -267,68 +274,96 @@ public:
     {
         getCentroid(_pivot);
         float maxDistance = 0.0;
-        for ( int32_t i = 0; i < _points.size(); i++ ) {
+        for ( int32_t i = 0; i < _points.size(); i++ )
+        {
             float distance = calcEuclideanDistance(_points[i], _pivot);
-            if ( maxDistance < distance ) {
+            if ( maxDistance < distance )
+            {
                 maxDistance = distance;
             }
         }
+
         _radius = maxDistance;
-        if ( _points.size() <= MIN_LEAF_SIZE ) {
+        if ( _points.size() <= MIN_LEAF_SIZE ) 
+        {
             return;
         }
 
         Point<DataT> leftChild = farthestFromThisPoint(_pivot);
         Point<DataT> rightChild = farthestFromThisPoint(leftChild);
-        if ( _leftChild == NULL ) {
+
+        if ( _leftChild == NULL ) 
+        {
             _leftChild = new SpaceTree<DataT>(_dimension);
         }
-        if ( _rightChild == NULL ) {
+        if ( _rightChild == NULL ) 
+        {
             _rightChild = new SpaceTree<DataT>(_dimension);
         }
-        for ( int32_t i = 0; i < _points.size(); i++ ) {
-            if ( calcEuclideanDistance(_points[i], leftChild) <= calcEuclideanDistance(_points[i], rightChild) ) {
+
+        for ( int32_t i = 0; i < _points.size(); i++ ) 
+        {
+            if ( calcEuclideanDistance(_points[i], leftChild) <= calcEuclideanDistance(_points[i], rightChild) ) 
+            {
                 _leftChild->addPoint(_points[i]);
-            } else {
+            } 
+            else
+            {
                 _rightChild->addPoint(_points[i]);
             }
         }
+
         _leftChild->build();
         _rightChild->build();
     }
 
     void searchPoint(Point<DataT> &point, MaxHeap<NeighborPoint<DataT>> &store, SpaceTree<DataT> *node)
     {
-        if ( node == NULL ) {
+        if ( node == NULL )
+        {
             return;
         }
+
         NeighborPoint<DataT> first;
-        if ( store.isFull() ) {
+        if ( store.isFull() ) 
+        {
             store.first(first);
-            if ( calcEuclideanDistance(point, node->_pivot) - node->_radius >= calcEuclideanDistance(point, first.getPoint()) ) {
+            if ( calcEuclideanDistance(point, node->_pivot) - node->_radius >= calcEuclideanDistance(point, first.getPoint()) ) 
+            {
                 return;
             }
         }
-        if ( node->isLeaf() ) {
-            for ( int32_t i = 0; i < node->_points.size(); i++ ) {
+
+        if ( node->isLeaf() )
+        {
+            for ( int32_t i = 0; i < node->_points.size(); i++ ) 
+            {
                 DataT distance1 = calcEuclideanDistance(point, node->_points[i]);
                 NeighborPoint<DataT> neighborPoint(node->_points[i], distance1);
-                if ( !store.isFull() || ( store.first(first) && distance1 <= calcEuclideanDistance(point, first.getPoint()) ) ) {
+                if ( !store.isFull() || ( store.first(first) && distance1 <= calcEuclideanDistance(point, first.getPoint()) ) ) 
+                {
                     store.insertForce(neighborPoint);
                 }
             }
-        } else {
+        }
+        else
+        {
             float disLeft = 0, disRight = 0;
-            if ( node->_leftChild != NULL ) {
+            if ( node->_leftChild != NULL ) 
+            {
                 disLeft = calcEuclideanDistance(node->_pivot, node->_leftChild->_pivot);
             }
-            if ( node->_rightChild != NULL ) {
+            if ( node->_rightChild != NULL ) 
+            {
                 disRight = calcEuclideanDistance(node->_pivot, node->_rightChild->_pivot);
             }
-            if ( disLeft < disRight ) {
+            if ( disLeft < disRight )
+            {
                 searchPoint(point, store, node->_leftChild);
                 searchPoint(point, store, node->_rightChild);
-            } else {
+            }
+            else
+            {
                 searchPoint(point, store, node->_rightChild);
                 searchPoint(point, store, node->_leftChild);
             }

@@ -86,22 +86,26 @@ public:
         _yAxis['m' - 'a'] = 1;
 
         _bkTree = new BKTree<char>();
-        for ( int32_t i = 0; i < 6; i++ ) {
+        for ( int32_t i = 0; i < 6; i++ ) 
+        {
             _spaceTree[i] = new SpaceTree<float>((i+1) * 2);
         }
 //        std::string filename = "E:/OneDrive/myCode/Mercur/pinyin.txt";
         FILE *f = fopen(filename.c_str(), "r");
-        if ( f ) {
+        if ( f )
+        {
             std::vector<std::string> fields;
             char buf[1024] = {0};
-            while ( fgets(buf, 1024, f) ) {
+            while ( fgets(buf, 1024, f) )
+            {
                 fields.clear();
                 DecomposeContentIntoFields(buf, "\n\t\r ", fields);
                 assert(fields.size()==2);
                 int32_t  size = fields[0].length();
                 const char *str = fields[0].c_str();
                 Point<float> point(size*2);
-                for ( int32_t i = 0; i < size * 2; i++ ) {
+                for ( int32_t i = 0; i < size * 2; i++ ) 
+                {
                     point.setCoordinateByAxis(i * 2, _xAxis[str[i] - 'a']);
                     point.setCoordinateByAxis(i * 2 + 1, _yAxis[str[i] - 'a']);
                 }
@@ -109,9 +113,12 @@ public:
                 _spaceTree[size-1]->addPoint(point);
                 _bkTree->addNode((char *)str, size);
             }
-            for ( int32_t i = 0; i < 6; i++ ) {
+
+            for ( int32_t i = 0; i < 6; i++ )
+            {
                 _spaceTree[i]->build();
             }
+
             fclose(f);
         }
     }
@@ -120,7 +127,8 @@ public:
     {
         int32_t size = str.size();
         Point<float> point(size * 2);
-        for ( int32_t i = 0; i < size; i++ ) {
+        for ( int32_t i = 0; i < size; i++ ) 
+        {
             point.setCoordinateByAxis(i * 2, _xAxis[str[i] - 'a']);
             point.setCoordinateByAxis(i * 2 + 1, _yAxis[str[i] - 'a']);
         }
@@ -128,10 +136,12 @@ public:
         MaxHeap<NeighborPoint<float>> maxHeap(3);
         _spaceTree[size - 1]->searchPoint(point, maxHeap, _spaceTree[size - 1]);
         NeighborPoint<float> first;
-        while ( maxHeap.first(first) ) {
+        while ( maxHeap.first(first) )
+        {
             maxHeap.out(first);
             first.print();
         }
+
         std::vector<BKNode<char>> vec;
         _bkTree->search((char *)str.c_str(), str.length(),  1, vec);
         std::vector<std::string> store;

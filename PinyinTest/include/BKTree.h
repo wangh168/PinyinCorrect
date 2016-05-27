@@ -20,8 +20,9 @@ public:
 
     BKNode(DataT *data, int32_t len)
     {
-        _data = new DataT[len];
+        _data = new DataT[len + 1];
         _len = len;
+        memset(_data, 0, _len + 1);
         memcpy((char *)_data, (char *)data, sizeof(DataT) * len);
     }
 
@@ -33,18 +34,20 @@ public:
 
         if ( _len != node._len || _data == NULL) {
             delete []_data;
-            _data = new DataT[node._len];
+            _data = new DataT[node._len + 1];
         }
 
         _len = node._len;
+        memset(_data, 0, _len + 1);
         memcpy((char *)_data, (char *)node._data, sizeof(DataT) * node._len);
         return *this;
     }
 
     BKNode<DataT>(const BKNode<DataT> &bkNode)
     {
-        _data = new DataT[bkNode._len];
+        _data = new DataT[bkNode._len + 1];
         _len = bkNode._len;
+        memset(_data, 0, _len + 1);
         memcpy((char *)_data, (char *)bkNode._data, sizeof(DataT) * _len);
     }
 
@@ -99,19 +102,23 @@ public:
 
     int32_t search(DataT *data, int32_t len, int32_t diffVal, std::vector<BKNode<DataT>> &out)
     {
-        if ( _node.getLen() == 0 ) {
+        if ( _node.getLen() == 0 )
+        {
             return -1;
         }
         DLV<DataT> dlv;
         int32_t distance = dlv.calculateDistance(_node.getData(), _node.getLen(), data, len);
-        if ( distance == diffVal ) {
+        if ( distance == diffVal )
+        {
             out.push_back(_node);
         }
-        int32_t minDis = diffVal - std::abs(distance);
-        int32_t maxDis = diffVal + std::abs(distance);
-        for ( int32_t i = minDis; i <= maxDis; i++ ) {
+        int32_t minDis = std::abs(distance) - diffVal;
+        int32_t maxDis = std::abs(distance) + diffVal;
+        for ( int32_t i = minDis; i <= maxDis; i++ ) 
+        {
             BKTree<DataT> *bkTree = NULL;
-            if ( _sub.find(i, bkTree) ) {
+            if ( _sub.find(i, bkTree) )
+            {
                 bkTree->search(data, len, diffVal, out);
             }
         }
@@ -120,26 +127,32 @@ public:
 
     int32_t addNode(DataT *data, int32_t len)
     {
-        if ( data == NULL || len == 0 ) {
+        if ( data == NULL || len == 0 ) 
+        {
             assert(data != NULL && len != 0);
             return -1;
         }
-        if ( _node.getLen() == 0 ) {
+        if ( _node.getLen() == 0 )
+        {
             _node = BKNode<DataT>(data, len);
             return 0;
         }
         DLV<DataT> dlv;
         int32_t distance = dlv.calculateDistance(_node.getData(), _node.getLen(), data, len);
-        if ( distance <= 0 ) {
+        if ( distance <= 0 )
+        {
             return -1;
         }
         BKTree<DataT> *pSubTree = NULL;
-        if ( !_sub.find(distance, pSubTree) ) {
+        if ( !_sub.find(distance, pSubTree) )
+        {
             DataBody<int32_t , BKTree<DataT>> _body;
             _body._key = distance;
             _body._value._node = BKNode<DataT>(data, len);
             _sub.insert(_body);
-        } else {
+        } 
+        else 
+        {
             return pSubTree->addNode(data, len);
         }
     }

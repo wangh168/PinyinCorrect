@@ -92,15 +92,19 @@ void test_spacetree()
     int32_t dimension = 2;
     SpaceTree<float> spaceTree(dimension);
     Point<float> point(dimension);
-    for (int32_t i = 0; i < 10; i++) {
-        for (int32_t j = 0; j < dimension; j++) {
+    for (int32_t i = 0; i < 10; i++)
+    {
+        for (int32_t j = 0; j < dimension; j++)
+        {
             point.setCoordinateByAxis(j, i + 1.0);
         }
         spaceTree.addPoint(point);
     }
     spaceTree.build();
+
     Point<float> myPoint(dimension);
-    for (int32_t i = 0; i < dimension; i++) {
+    for (int32_t i = 0; i < dimension; i++)
+    {
         myPoint.setCoordinateByAxis(i, i + 5.5);
     }
     NeighborPoint<float> neighborPoint(myPoint);
@@ -150,10 +154,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
     cout << "Hello, World!" << endl;
     //test_bktree();
-    //    test_maxheap();
-    //    test_point();
-    //    test_spacetree();
-    //    test_neighborpoint();
+    //test_maxheap();
+    //test_point();
+    //test_spacetree();
+    //test_neighborpoint();
 
     test_hyperspace();
     system("pause");

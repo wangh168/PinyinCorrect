@@ -46,12 +46,17 @@ public:
         }
 
         int32_t flag = 0;
-        for ( int32_t i = 1; i <= len1; i++ ) {
-            for ( int32_t j = 1; j <= len2; j++ ) {
+        for ( int32_t i = 1; i <= len1; i++ ) 
+        {
+            for ( int32_t j = 1; j <= len2; j++ ) 
+            {
                 str1[i-1] == str2[j-1]? flag = 0: flag = 1;
-                if ( (j >=2 && i >= 2) && str1[i-2] == str2[j-1] && str1[i-1] == str2[j-2] ) {
+                if ( (j >=2 && i >= 2) && str1[i-2] == str2[j-1] && str1[i-1] == str2[j-2] )
+                { 
                     _matrix[i][j] = minOfThree(_matrix[i][j-1] + 1, _matrix[i-1][j] + 1, _matrix[i-2][j-2] + flag);
-                } else {
+                }
+                else
+                {
                     _matrix[i][j] = minOfThree(_matrix[i][j-1] + 1, _matrix[i-1][j] + 1, _matrix[i-1][j-1] + flag);
                 }
             }
